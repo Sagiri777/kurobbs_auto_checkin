@@ -2,8 +2,8 @@ name: Auto Checkin Job
 
 on:
   schedule:
-    # 每天早上 6 点北京时间（UTC+8）运行
-    - cron: '0 22 * * *'  # UTC 时间 22:00 对应北京时间 6:00
+    # 每天早上 5 点半北京时间（UTC+8）运行
+    - cron: '30 21 * * *'  # UTC 时间 21:30 对应北京时间 5:30
   workflow_dispatch:  # 允许手动触发
 
 jobs:
