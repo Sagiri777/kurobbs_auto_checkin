@@ -35,20 +35,14 @@ class KurobbsClient:
     def get_headers(self) -> Dict[str, str]:
         """Get the headers required for API requests."""
         return {
-            "osversion": "Android",
-            "devcode": "2fba3859fe9bfe9099f2696b8648c2c6",
-            "countrycode": "CN",
-            "ip": "10.0.2.233",
-            "model": "2211133C",
-            "source": "android",
-            "lang": "zh-Hans",
-            "version": "1.0.9",
-            "versioncode": "1090",
-            "token": self.token,
-            "content-type": "application/x-www-form-urlencoded; charset=utf-8",
-            "accept-encoding": "gzip",
-            "user-agent": "okhttp/3.10.0",
-        }
+  'User-Agent': "Mozilla/5.0 (iPhone; CPU iPhone OS 16_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko)  KuroGameBox/2.4.0",
+  'Accept': "application/json, text/plain, */*",
+  'devcode': "221.220.134.224, Mozilla/5.0 (iPhone; CPU iPhone OS 16_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko)  KuroGameBox/2.4.0",
+  'source': "ios",
+  'accept-language': "zh-CN,zh-Hans;q=0.9",
+  'token': self.token,
+  'origin': "https://web-static.kurobbs.com"
+}
 
     def make_request(self, url: str, data: Dict[str, Any]) -> Response:
         """Make a POST request to the specified URL with the given data."""
