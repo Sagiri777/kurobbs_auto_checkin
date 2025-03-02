@@ -35,5 +35,9 @@ jobs:
           TOKEN: ${{ secrets.TOKEN }}
           BARK_DEVICE_KEY: ${{ secrets.BARK_DEVICE_KEY }}
           BARK_SERVER_URL: ${{ secrets.BARK_SERVER_URL }}
+          WECHAT_WORK_CORPID: ${{ secrets.WECHAT_WORK_CORPID }}
+          WECHAT_WORK_AGENTID: ${{ secrets.WECHAT_WORK_AGENTID }}
+          WECHAT_WORK_SECRET: ${{ secrets.WECHAT_WORK_SK }}
+          WECHAT_WORK_USERID: ${{ secrets.WECHAT_WORK_USERID }}
         run: |
           python auto_checkin.py
