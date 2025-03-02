@@ -155,7 +155,12 @@ def main():
                 logger.info(kurobbs.msg)
     except KurobbsClientException as e:
         logger.error(str(e), exc_info=False)
-        send_bark_notification("签到任务失败!")
+        if mode == "bark":
+            send_bark_notification(kurobbs.msg)
+        elif mode == "wechatWorkApp":
+            send_wechat_work_notification(kurobbs.msg)
+        else:
+            logger.info(kurobbs.msg)
         sys.exit(1)
     except Exception as e:
         logger.error(f"An unexpected error occurred: {e}")
