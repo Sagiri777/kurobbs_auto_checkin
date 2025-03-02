@@ -8,7 +8,9 @@ from loguru import logger
 from pydantic import BaseModel, Field
 
 from ext_bark import send_bark_notification
+from ext_wechatWorkApp import send_wechat_work_notification
 
+mode = "wechatWorkApp"
 
 class Response(BaseModel):
     code: int = Field(..., alias="code", description="返回值")
@@ -35,14 +37,14 @@ class KurobbsClient:
     def get_headers(self) -> Dict[str, str]:
         """Get the headers required for API requests."""
         return {
-  'User-Agent': "Mozilla/5.0 (iPhone; CPU iPhone OS 16_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko)  KuroGameBox/2.4.0",
-  'Accept': "application/json, text/plain, */*",
-  'devcode': "221.220.134.224, Mozilla/5.0 (iPhone; CPU iPhone OS 16_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko)  KuroGameBox/2.4.0",
-  'source': "ios",
-  'accept-language': "zh-CN,zh-Hans;q=0.9",
-  'token': self.token,
-  'origin': "https://web-static.kurobbs.com"
-}
+        'User-Agent': "Mozilla/5.0 (iPhone; CPU iPhone OS 16_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko)  KuroGameBox/2.4.0",
+        'Accept': "application/json, text/plain, */*",
+        'devcode': "221.220.134.224, Mozilla/5.0 (iPhone; CPU iPhone OS 16_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko)  KuroGameBox/2.4.0",
+        'source': "ios",
+        'accept-language': "zh-CN,zh-Hans;q=0.9",
+        'token': self.token,
+        'origin': "https://web-static.kurobbs.com"
+        }
 
     def make_request(self, url: str, data: Dict[str, Any]) -> Response:
         """Make a POST request to the specified URL with the given data."""
@@ -144,7 +146,12 @@ def main():
         kurobbs = KurobbsClient(token)
         kurobbs.start()
         if kurobbs.msg:
-            send_bark_notification(kurobbs.msg)
+            if mode == "bark":
+                send_bark_notification(kurobbs.msg)
+            elif mode == "wechatWorkApp":
+                send_wechat_work_notification(kurobbs.msg)
+            else:
+                logger.info(kurobbs.msg)
     except KurobbsClientException as e:
         logger.error(str(e), exc_info=False)
         send_bark_notification("签到任务失败!")
