@@ -140,6 +140,7 @@ def main():
     """Main function to handle command-line arguments and start the sign-in process."""
     token = os.getenv("TOKEN")
     debug = os.getenv("DEBUG", False)
+    mode = os.getenv("MODE", "wechatWorkApp")
     configure_logger(debug=debug)
 
     try:
