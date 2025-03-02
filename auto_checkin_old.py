@@ -39,7 +39,6 @@ class KurobbsClient:
         return {
         'User-Agent': "Mozilla/5.0 (iPhone; CPU iPhone OS 16_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko)  KuroGameBox/2.4.0",
         'Accept': "application/json, text/plain, */*",
-        'devcode': "221.220.134.224, Mozilla/5.0 (iPhone; CPU iPhone OS 16_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko)  KuroGameBox/2.4.0",
         'source': "ios",
         'accept-language': "zh-CN,zh-Hans;q=0.9",
         'token': self.token,
@@ -49,21 +48,31 @@ class KurobbsClient:
     def make_request(self, url: str, data: Dict[str, Any]) -> Response:
         """Make a POST request to the specified URL with the given data."""
         headers = self.get_headers()
+        logger.debug(f"Making request to: {url}")
+        logger.debug(f"Request headers: {headers}")
+        logger.debug(f"Request data: {data}")
+        
         response = requests.post(url, headers=headers, data=data)
+        logger.debug(f"Response status code: {response.status_code}")
+        logger.debug(f"Response content: {response.content.decode()}")
+        
         res = Response.model_validate_json(response.content)
-        logger.debug(res.model_dump_json(indent=2, exclude={"data"}))
+        logger.debug(f"Parsed response: {res.model_dump_json(indent=2)}")
         return res
 
     def get_user_game_list(self, game_id: int) -> List[Dict[str, Any]]:
         """Get the list of games for the user."""
+        logger.debug(f"Getting user game list for game_id: {game_id}")
         data = {"gameId": game_id}
         res = self.make_request(self.FIND_ROLE_LIST_API_URL, data)
+        logger.debug(f"User game list response data: {res.data}")
         return res.data
 
     def checkin(self) -> Response:
         """Perform the check-in operation."""
+        logger.debug("Starting check-in process")
         user_game_list = self.get_user_game_list(3)
-
+        
         date = datetime.now().month
         data = {
             "gameId": user_game_list[0].get("gameId", 2),
@@ -72,10 +81,12 @@ class KurobbsClient:
             "userId": user_game_list[0].get("userId", 0),
             "reqMonth": f"{date:02d}",
         }
+        logger.debug(f"Check-in data prepared: {data}")
         return self.make_request(self.SIGN_URL, data)
 
     def sign_in(self) -> Response:
         """Perform the sign-in operation."""
+        logger.debug("Starting sign-in process")
         return self.make_request(self.USER_SIGN_URL, {"gameId": 2})
 
     def _process_sign_action(
@@ -93,11 +104,18 @@ class KurobbsClient:
         :param success_message: The message to log on success.
         :param failure_message: The message to log on failure.
         """
-        resp = action_method()
-        if resp.success:
-            self.result[action_name] = success_message
-        else:
-            self.exceptions.append(KurobbsClientException(failure_message))
+        logger.debug(f"Processing sign action: {action_name}")
+        try:
+            resp = action_method()
+            if resp.success:
+                logger.debug(f"{action_name} successful: {success_message}")
+                self.result[action_name] = success_message
+            else:
+                logger.debug(f"{action_name} failed: {failure_message}")
+                self.exceptions.append(KurobbsClientException(failure_message))
+        except Exception as e:
+            logger.exception(f"Error during {action_name}")
+            self.exceptions.append(e)
 
     def start(self):
         """Start the sign-in process."""
@@ -133,7 +151,8 @@ def configure_logger(debug: bool = False):
     """Configure the logger based on the debug mode."""
     logger.remove()  # Remove default logger configuration
     log_level = "DEBUG" if debug else "INFO"
-    logger.add(sys.stdout, level=log_level)
+    format_string = "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>"
+    logger.add(sys.stdout, level=log_level, format=format_string)
 
 
 def main():
