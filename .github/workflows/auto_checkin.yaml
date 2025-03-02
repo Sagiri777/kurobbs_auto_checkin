@@ -40,4 +40,4 @@ jobs:
           WECHAT_WORK_SECRET: ${{ secrets.WECHAT_WORK_SK }}
           WECHAT_WORK_USERID: ${{ secrets.WECHAT_WORK_USERID }}
         run: |
-          python auto_checkin.py
+          python auto_checkin_old.py
