@@ -6,7 +6,7 @@ def send_wechat_work_notification(message):
     """Send a notification via WeChat Work Application."""
     # 获取企业微信相关配置
     corpid = os.getenv("WECHAT_WORK_CORPID")
-    corpsecret = os.getenv("WECHAT_WORK_CORPSECRET")
+    corpsecret = os.getenv("WECHAT_WORK_SECRET")
     agentid = os.getenv("WECHAT_WORK_AGENTID")
     userid = os.getenv("WECHAT_WORK_USERID")
 
